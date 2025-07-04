@@ -3,15 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - people
+  - food
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Terrain
   - Water
   - UI
-  - 
+  - Creatures
   - 
   - 
   - 
@@ -40,4 +42,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: terrain1
+    uniqueID: 234734947
+    locked: 0
+  - name: props
+    uniqueID: 4054045267
+    locked: 0
+  - name: people
+    uniqueID: 3138023237
+    locked: 0
+  - name: scenario ui
+    uniqueID: 2804123829
     locked: 0
