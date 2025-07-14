@@ -2,46 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SeekingFoodState : CreatureState
+public class SeekingFoodState : MovingToTargetState
 {
     public SeekingFoodState(Creature creature) : base(creature) { }
 
-    public override void Enter()
+    protected override Vector3 GetInitialTarget()
     {
-        creature.ChooseNewTarget();
-        creature.movingTowardsTarget = true;
+        return creature.ChooseNewTarget();
     }
 
-    public override void Update()
+    protected override bool ShouldInterrupt()
     {
         if (creature.CanEat())
         {
             creature.SetNextState(new EatingState(creature));
-            return;
+            return true;
         }
 
-        Dictionary<string, List<GameObject>> objectsDetected = creature.Inspect();
-
-        if (objectsDetected.ContainsKey(TagStrings.FOOD_TAG))
+        Dictionary<string, List<GameObject>> detected = creature.Inspect();
+        if (detected.ContainsKey(TagStrings.FOOD_TAG))
         {
-            creature.TargetPosition = objectsDetected[TagStrings.FOOD_TAG][0].transform.position;
+            targetPosition = detected[TagStrings.FOOD_TAG][0].transform.position;
         }
 
-        Vector2 direction = creature.GetDirectionToTarget();
-        creature.SetMovementDirection(direction);
+        return false;
     }
 
-    public override void FixedUpdate() {
-        if (creature.ReachedTarget())
-        {
-            creature.ChooseNewTarget();
-            creature.movingTowardsTarget = true;
-        }
-    }
-
-    public override void Exit()
+    protected override void OnReachedTarget()
     {
-        creature.StopMoving();
+        // Keep moving randomly if no food found
+        targetPosition = creature.ChooseNewTarget();
     }
 
     public override string GetName() => "seeking food";

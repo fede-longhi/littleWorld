@@ -16,4 +16,5 @@ public abstract class CreatureState
     public abstract void FixedUpdate();
     public abstract void Exit();
     public abstract string GetName();
+    public abstract void DrawGizmos();
 }

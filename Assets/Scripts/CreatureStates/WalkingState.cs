@@ -2,34 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WalkingState : CreatureState
+public class WalkingState : MovingToTargetState
 {
     public WalkingState(Creature creature) : base(creature) { }
 
-    public override void Enter()
+    protected override Vector3 GetInitialTarget()
     {
-        creature.ChooseNewTarget();
+        return creature.ChooseNewTarget();
     }
 
-    public override void Update()
+    protected override void OnReachedTarget()
     {
-        Vector2 direction = creature.GetDirectionToTarget();
-        creature.SetMoventInput(direction);
-    }
-
-    public override void FixedUpdate()
-    {
-        Vector2 direction = creature.GetDirectionToTarget();
-        if (creature.ReachedTarget() || !creature.CanMove(direction))
-        {
-            creature.ChangeState();
-            return;
-        }
-    }
-
-    public override void Exit()
-    {
-        creature.StopMoving();
+        creature.ChangeState();
     }
 
     public override string GetName() => "walking";

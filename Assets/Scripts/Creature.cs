@@ -19,10 +19,18 @@ public class Creature : MonoBehaviour
     public Vector2 areaMin;
     public Vector2 areaMax;
 
-    public float collisionCheckDistance = 0.1f;
+    public float maxTargetDistance;
 
-    public Vector3 TargetPosition;
-    public bool movingTowardsTarget = false;
+    public float collisionCheckDistance = 0.1f;
+    // public float obstacleDetectionAngle = 90;
+    // [SerializeField]
+    // private float obstacleCheckCircleRadius = 3f;
+    // [SerializeField]
+    // private float obstacleCheckCircleDistance = 3f;
+
+    [SerializeField]
+    private LayerMask obstacleLayerMask;
+    private RaycastHit2D[] obstacleCollisions;
 
     private CreatureState currentState;
 
@@ -43,8 +51,7 @@ public class Creature : MonoBehaviour
 
     public List<Func<CreatureState>> possibleCreatureStates;
 
-
-    private Vector2 movementInput;
+    public Vector2 movementInput;
 
     private bool _isWalking = false;
     public bool isWalking
@@ -93,6 +100,7 @@ public class Creature : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         touchingCollider = GetComponent<CapsuleCollider2D>();
+        obstacleCollisions = new RaycastHit2D[10];
         possibleCreatureStates = new List<Func<CreatureState>>
         {
             () => new IdleState(this),
@@ -104,6 +112,8 @@ public class Creature : MonoBehaviour
 
     void Update()
     {
+        currentState?.Update();
+
         hunger += hungerRate * Time.deltaTime;
         hunger = Mathf.Min(hunger, maxHunger);
 
@@ -117,42 +127,22 @@ public class Creature : MonoBehaviour
         {
             Die();
         }
-
-        currentState?.Update();
-
         statusText.text = currentState.GetName();
-    }
-
-    public void SetMoventInput(Vector2 input)
-    {
-        movementInput = input;
-        SetFacingDirection();
-        isWalking = movementInput.x != 0 || movementInput.y != 0;
     }
 
     private void FixedUpdate()
     {
+        currentState?.FixedUpdate();
         if (!isDead && movementInput != Vector2.zero)
         {
             rb2D.velocity = movementInput * velocity;
         }
-
-        currentState?.FixedUpdate();
     }
 
     /* *** States *** */
     public void ChangeState()
     {
-        //TODO: move this on the determine next state func
-        if (IsHungry)
-        {
-            // Vector3 foodPosition = FindNearbyFood(); // implement this later
-            SetNextState(new SeekingFoodState(this));
-            return;
-        }
-
         CreatureState nextState = DetermineNextState();
-
         SetNextState(nextState);
     }
 
@@ -173,35 +163,28 @@ public class Creature : MonoBehaviour
     }
 
     /* *** Movement *** */
-
-    public Vector2 GetDirectionToTarget()
+    public void SetMovementInput(Vector2 input)
     {
-        return (TargetPosition - transform.position).normalized;
+        if (isDead) return;
+        movementInput = input;
+        SetFacingDirection();
+        isWalking = movementInput.x != 0 || movementInput.y != 0;
     }
 
-    public bool ReachedTarget(float tolerance = 0.1f)
+    public Vector3 GetMovementDirection(Vector3 target)
     {
-        return movingTowardsTarget && Vector2.Distance(transform.position, TargetPosition) < tolerance;
+        return (target - transform.position).normalized;
+    }
+
+    public bool ReachedTarget(Vector3 target, float tolerance = 0.1f)
+    {
+        return Vector2.Distance(transform.position, target) < tolerance;
     }
 
     public bool CanMove(Vector2 direction)
     {
         return !WillCollide(direction);
     }
-
-    public void Move()
-    {
-        SetMovementDirection(GetDirectionToTarget());
-    }
-
-    public void SetMovementDirection(Vector2 direction)
-    {
-        if (isDead) return;
-
-        isWalking = direction != Vector2.zero;
-        movementInput = direction;
-        SetFacingDirection();
-    } 
 
     private void SetFacingDirection()
     {
@@ -221,24 +204,33 @@ public class Creature : MonoBehaviour
     {
         rb2D.velocity = Vector2.zero;
         movementInput = Vector2.zero;
-        movingTowardsTarget = false;
         isWalking = false;
     }
 
-    public void ChooseNewTarget()
+    public Vector3 ChooseNewTarget()
     {
-        float destinationX = Random.Range(areaMin.x, areaMax.x);
-        float destinationY = Random.Range(areaMin.y, areaMax.y);
+        Vector2 target = GeometryUtils.GetRandomPointFromPosition(maxTargetDistance, transform.position, areaMin, areaMax);
+        // public LayerMask layerMask; // Optional: restrict which layers to check
+        Collider2D[] results = new Collider2D[10]; // Adjust size as needed
+        ContactFilter2D filter = new ContactFilter2D();
 
-        TargetPosition = new Vector3(destinationX, destinationY, 0);
+        if (Physics2D.OverlapPoint(target, filter, results) > 0)
+        {
+            return ChooseNewTarget();
+        }
 
-        movingTowardsTarget = true;
+        return target;
     }
 
     public bool WillCollide(Vector2 direction)
     {
         bool collisionDetected = touchingCollider.Cast(direction, castFilter, movementHits, collisionCheckDistance) > 0;
         Debug.DrawRay(transform.position, direction * collisionCheckDistance, Color.red);
+
+        Vector3 rotatedVector1 = Quaternion.AngleAxis(15, Vector3.forward)*direction;
+        Debug.DrawRay(transform.position, rotatedVector1 * 3, Color.yellow);
+        Vector3 rotatedVector2 = Quaternion.AngleAxis(-15, Vector3.forward)*direction;
+        Debug.DrawRay(transform.position, rotatedVector2 * 3, Color.yellow);
 
         return collisionDetected;
     }
@@ -265,7 +257,7 @@ public class Creature : MonoBehaviour
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, handRange);
             foreach (Collider2D hit in hits)
             {
-                if (hit.gameObject.tag == TagStrings.FOOD_TAG)
+                if (hit.CompareTag(TagStrings.FOOD_TAG))
                 {
                     return true;
                 }
@@ -297,12 +289,10 @@ public class Creature : MonoBehaviour
             }
         }
 
-        // Sort by distance (closest first)
         validObjects.Sort((a, b) =>
             Vector2.Distance(transform.position, a.transform.position)
             .CompareTo(Vector2.Distance(transform.position, b.transform.position)));
 
-        // Group by tag
         foreach (GameObject obj in validObjects)
         {
             string tag = obj.tag;
@@ -317,24 +307,22 @@ public class Creature : MonoBehaviour
 
         return groupedObjects;
     }
+    private void Die()
+    {
+        if (isDead) return;
+
+        SetNextState(new DeadState(this));
+        isDead = true;
+    }
 
     private void OnDrawGizmosSelected()
     {
         DebugDrawUtils.DrawGizmoCircle(transform.position, inspectionRadius, Color.yellow);
         DebugDrawUtils.DrawGizmoCircle(transform.position, handRange, Color.red);
+
+        Gizmos.color = new Color(0f, 1f, 0f, 0.7f); // Red with custom alpha
+        currentState?.DrawGizmos();
     }
 
-    private void Die()
-    {
-        SetNextState(new DeadState(this));
-        isDead = true;
-    }
 
-}
-
-public enum WalkResult
-{
-    None,
-    Collided,
-    ReachedTarget
 }

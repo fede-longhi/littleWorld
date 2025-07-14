@@ -1,0 +1,51 @@
+{
+    "name": "PlayerInput",
+    "maps": [
+        {
+            "name": "Game",
+            "id": "46acae58-66d2-48bc-9009-22f12fe39946",
+            "actions": [
+                {
+                    "name": "changeTarget",
+                    "type": "Button",
+                    "id": "bf1354fa-84df-41cd-9172-d9cd74e8f7fb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "42749a8b-00cc-44fc-a6ec-764f7fbc6cf7",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "New control scheme",
+                    "action": "changeTarget",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "New control scheme",
+            "bindingGroup": "New control scheme",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

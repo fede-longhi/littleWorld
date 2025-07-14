@@ -76,8 +76,8 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1156944059
-  m_SortingLayer: 3
+  m_SortingLayerID: -1490843467
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &1673681935
@@ -350,13 +350,20 @@ MonoBehaviour:
   maxTimeBetweenMoves: 2
   areaMin: {x: -18, y: -10}
   areaMax: {x: 18, y: 10}
+  maxTargetDistance: 5
   collisionCheckDistance: 0.1
-  TargetPosition: {x: 0, y: 0, z: 0}
+  obstacleDetectionAngle: 90
+  obstacleCheckCircleRadius: 1
+  obstacleCheckCircleDistance: 1
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
   life: 100
   hunger: 0
   hungerRate: 1
   hungerThreshold: 50
   maxHunger: 100
-  foodTag: Food
+  hungerDamageRate: 1
   inspectionRadius: 3
   handRange: 0.3
+  movementInput: {x: 0, y: 0}

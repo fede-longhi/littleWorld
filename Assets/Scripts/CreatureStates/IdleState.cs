@@ -26,6 +26,7 @@ public class IdleState : CreatureState
     public override void FixedUpdate() { }
 
     public override void Exit() { }
+    public override void DrawGizmos() { }
 
     public override string GetName() => "idle";
 }

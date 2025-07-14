@@ -32,6 +32,7 @@ public class EatingState : CreatureState
     {
         creature.StopEating();
     }
+    public override void DrawGizmos() { }
 
     public override string GetName() => "eating";
 }
