@@ -35,6 +35,42 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""increaseGameSpeed"",
+                    ""type"": ""Button"",
+                    ""id"": ""a1c111c8-7897-437c-93b0-98b72e4c7797"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""decreaseGameSpeed"",
+                    ""type"": ""Button"",
+                    ""id"": ""5d885891-825f-4d4f-a78c-b02b856dd5b8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""click"",
+                    ""type"": ""Button"",
+                    ""id"": ""217fb17a-e7ec-4404-bcee-72f242d08cc9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""clearAction"",
+                    ""type"": ""Button"",
+                    ""id"": ""a16c03ad-769f-401e-8d6a-448a4950bd92"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -42,10 +78,76 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""42749a8b-00cc-44fc-a6ec-764f7fbc6cf7"",
                     ""path"": ""<Keyboard>/tab"",
-                    ""interactions"": ""Press(behavior=2)"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""New control scheme"",
                     ""action"": ""changeTarget"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d34cdc2d-c498-42de-aed2-3b684eb961c9"",
+                    ""path"": ""<Keyboard>/numpadPlus"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""increaseGameSpeed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f126fd7b-dd06-4a87-a0b2-c4cdaa926594"",
+                    ""path"": ""<Keyboard>/rightBracket"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""increaseGameSpeed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2a8a8825-902a-4501-8d4c-1c216b238f7f"",
+                    ""path"": ""<Keyboard>/numpadMinus"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""decreaseGameSpeed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a9090623-419e-4437-99f9-397c05985cbd"",
+                    ""path"": ""<Keyboard>/slash"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""decreaseGameSpeed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d868bc5f-06f7-4221-bce1-4a0606451e52"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6f64b286-fbf8-400c-bd32-75523507d77f"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""clearAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -74,6 +176,10 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_changeTarget = m_Game.FindAction("changeTarget", throwIfNotFound: true);
+        m_Game_increaseGameSpeed = m_Game.FindAction("increaseGameSpeed", throwIfNotFound: true);
+        m_Game_decreaseGameSpeed = m_Game.FindAction("decreaseGameSpeed", throwIfNotFound: true);
+        m_Game_click = m_Game.FindAction("click", throwIfNotFound: true);
+        m_Game_clearAction = m_Game.FindAction("clearAction", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -136,11 +242,19 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Game;
     private List<IGameActions> m_GameActionsCallbackInterfaces = new List<IGameActions>();
     private readonly InputAction m_Game_changeTarget;
+    private readonly InputAction m_Game_increaseGameSpeed;
+    private readonly InputAction m_Game_decreaseGameSpeed;
+    private readonly InputAction m_Game_click;
+    private readonly InputAction m_Game_clearAction;
     public struct GameActions
     {
         private @PlayerInput m_Wrapper;
         public GameActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @changeTarget => m_Wrapper.m_Game_changeTarget;
+        public InputAction @increaseGameSpeed => m_Wrapper.m_Game_increaseGameSpeed;
+        public InputAction @decreaseGameSpeed => m_Wrapper.m_Game_decreaseGameSpeed;
+        public InputAction @click => m_Wrapper.m_Game_click;
+        public InputAction @clearAction => m_Wrapper.m_Game_clearAction;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -153,6 +267,18 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @changeTarget.started += instance.OnChangeTarget;
             @changeTarget.performed += instance.OnChangeTarget;
             @changeTarget.canceled += instance.OnChangeTarget;
+            @increaseGameSpeed.started += instance.OnIncreaseGameSpeed;
+            @increaseGameSpeed.performed += instance.OnIncreaseGameSpeed;
+            @increaseGameSpeed.canceled += instance.OnIncreaseGameSpeed;
+            @decreaseGameSpeed.started += instance.OnDecreaseGameSpeed;
+            @decreaseGameSpeed.performed += instance.OnDecreaseGameSpeed;
+            @decreaseGameSpeed.canceled += instance.OnDecreaseGameSpeed;
+            @click.started += instance.OnClick;
+            @click.performed += instance.OnClick;
+            @click.canceled += instance.OnClick;
+            @clearAction.started += instance.OnClearAction;
+            @clearAction.performed += instance.OnClearAction;
+            @clearAction.canceled += instance.OnClearAction;
         }
 
         private void UnregisterCallbacks(IGameActions instance)
@@ -160,6 +286,18 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @changeTarget.started -= instance.OnChangeTarget;
             @changeTarget.performed -= instance.OnChangeTarget;
             @changeTarget.canceled -= instance.OnChangeTarget;
+            @increaseGameSpeed.started -= instance.OnIncreaseGameSpeed;
+            @increaseGameSpeed.performed -= instance.OnIncreaseGameSpeed;
+            @increaseGameSpeed.canceled -= instance.OnIncreaseGameSpeed;
+            @decreaseGameSpeed.started -= instance.OnDecreaseGameSpeed;
+            @decreaseGameSpeed.performed -= instance.OnDecreaseGameSpeed;
+            @decreaseGameSpeed.canceled -= instance.OnDecreaseGameSpeed;
+            @click.started -= instance.OnClick;
+            @click.performed -= instance.OnClick;
+            @click.canceled -= instance.OnClick;
+            @clearAction.started -= instance.OnClearAction;
+            @clearAction.performed -= instance.OnClearAction;
+            @clearAction.canceled -= instance.OnClearAction;
         }
 
         public void RemoveCallbacks(IGameActions instance)
@@ -189,5 +327,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     public interface IGameActions
     {
         void OnChangeTarget(InputAction.CallbackContext context);
+        void OnIncreaseGameSpeed(InputAction.CallbackContext context);
+        void OnDecreaseGameSpeed(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
+        void OnClearAction(InputAction.CallbackContext context);
     }
 }

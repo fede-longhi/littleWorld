@@ -28,4 +28,12 @@ public static class GeometryUtils
 
         return new Vector2(destinationX, destinationY);
     }
+
+    public static Vector3 ScreenToWorldPosition(Vector2 position, Camera camera)
+    {
+        float zDistance = Mathf.Abs(camera.transform.position.z);
+        Vector3 worldPosition = camera.ScreenToWorldPoint(new Vector3(position.x, position.y, zDistance));
+        worldPosition.z = 0;
+        return worldPosition;
+    }
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1625222781442812827}
   - component: {fileID: 1625222781442812824}
   - component: {fileID: 1625222781442812825}
+  - component: {fileID: -7713576151078063395}
   m_Layer: 6
   m_Name: house_01
   m_TagString: Untagged
@@ -114,3 +115,17 @@ PolygonCollider2D:
       - {x: 0.4, y: 0.5}
       - {x: -1.02, y: -0.17}
       - {x: 0, y: -0.67}
+--- !u!114 &-7713576151078063395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625222781442812830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f313fa826092c514db607ca54111abcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityName: house
+  selectionTagPositionOffset: 1.5

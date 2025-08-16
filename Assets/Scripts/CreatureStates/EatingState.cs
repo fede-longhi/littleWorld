@@ -23,7 +23,6 @@ public class EatingState : CreatureState
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
-            creature.hunger = 0f;
             creature.ChangeState();
         }
     }

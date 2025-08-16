@@ -5,7 +5,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using TMPro;
 
-public class Creature : MonoBehaviour
+public class Creature : Entity
 {
     public TMP_Text statusText;
     private Rigidbody2D rb2D;
@@ -22,11 +22,6 @@ public class Creature : MonoBehaviour
     public float maxTargetDistance;
 
     public float collisionCheckDistance = 0.1f;
-    // public float obstacleDetectionAngle = 90;
-    // [SerializeField]
-    // private float obstacleCheckCircleRadius = 3f;
-    // [SerializeField]
-    // private float obstacleCheckCircleDistance = 3f;
 
     [SerializeField]
     private LayerMask obstacleLayerMask;
@@ -34,8 +29,11 @@ public class Creature : MonoBehaviour
 
     private CreatureState currentState;
 
+    public float age = 0f;
+
     [Header("Creature Needs")]
     public float life = 100f;
+
     [Header("Hunger")]
     public float hunger = 0f;
     public float hungerRate = 1f; // per second
@@ -48,11 +46,10 @@ public class Creature : MonoBehaviour
     public float handRange = 0.2f;
 
     public bool IsHungry => hunger >= hungerThreshold;
-
     public List<Func<CreatureState>> possibleCreatureStates;
-
     public Vector2 movementInput;
 
+    /* *** Behaviour variables ***  */
     private bool _isWalking = false;
     public bool isWalking
     {
@@ -95,6 +92,11 @@ public class Creature : MonoBehaviour
         }
     }
 
+    public void Awake()
+    {
+        entityName = CreatureNameGenerator.GenerateName();
+    }
+
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
@@ -112,21 +114,32 @@ public class Creature : MonoBehaviour
 
     void Update()
     {
-        currentState?.Update();
-
-        hunger += hungerRate * Time.deltaTime;
-        hunger = Mathf.Min(hunger, maxHunger);
-
-        if (hunger > hungerThreshold)
+        if (!isDead)
         {
-            life -= hungerDamageRate * Time.deltaTime;
-            life = Mathf.Max(life, 0f); // Prevent negative life
-        }
+            age += Time.deltaTime;
 
-        if (life <= 0f)
-        {
-            Die();
+            currentState?.Update();
+
+            //Manage hunger
+            hunger += hungerRate * Time.deltaTime;
+            hunger = Mathf.Min(hunger, maxHunger);
+
+            if (hunger > hungerThreshold)
+            {
+                life -= hungerDamageRate * Time.deltaTime;
+                life = Mathf.Max(life, 0f); // Prevent negative life
+            }
+
+            // Manage life
+            if (life <= 0f)
+            {
+                Die();
+            }
         }
+    }
+
+    private void LateUpdate()
+    {
         statusText.text = currentState.GetName();
     }
 
@@ -227,9 +240,9 @@ public class Creature : MonoBehaviour
         bool collisionDetected = touchingCollider.Cast(direction, castFilter, movementHits, collisionCheckDistance) > 0;
         Debug.DrawRay(transform.position, direction * collisionCheckDistance, Color.red);
 
-        Vector3 rotatedVector1 = Quaternion.AngleAxis(15, Vector3.forward)*direction;
+        Vector3 rotatedVector1 = Quaternion.AngleAxis(15, Vector3.forward) * direction;
         Debug.DrawRay(transform.position, rotatedVector1 * 3, Color.yellow);
-        Vector3 rotatedVector2 = Quaternion.AngleAxis(-15, Vector3.forward)*direction;
+        Vector3 rotatedVector2 = Quaternion.AngleAxis(-15, Vector3.forward) * direction;
         Debug.DrawRay(transform.position, rotatedVector2 * 3, Color.yellow);
 
         return collisionDetected;
@@ -238,7 +251,33 @@ public class Creature : MonoBehaviour
     /* *** Food *** */
     public void Eat()
     {
+        FoodSource food = GetFoodSource();
         isEating = true;
+        StartCoroutine(ConsumeFood(food));
+    }
+
+    public FoodSource GetFoodSource()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, handRange);
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.CompareTag(TagStrings.FOOD_TAG))
+            {
+                return hit.transform.gameObject.GetComponent<FoodSource>();
+            }
+        }
+        return null;
+    }
+    private IEnumerator ConsumeFood(FoodSource food)
+    {
+        while (food != null && !food.IsEmpty() && isEating)
+        {
+            float amount = food.Consume(Time.deltaTime);
+
+            hunger -= amount;
+
+            yield return null;
+        }
     }
 
     public void StopEating()
@@ -311,6 +350,12 @@ public class Creature : MonoBehaviour
     {
         if (isDead) return;
 
+        // OnCreatureDeath?.Invoke();
+        CreatureEventBus.Raise(new CreatureEvent
+        {
+            type = CreatureEventType.DEATH,
+            creature = this
+        });
         SetNextState(new DeadState(this));
         isDead = true;
     }
@@ -324,5 +369,11 @@ public class Creature : MonoBehaviour
         currentState?.DrawGizmos();
     }
 
+    public override void Select() {}
 
+    public override void Deselect()
+    {
+        Transform selectionTag = transform.Find("activeEntityTag");
+        selectionTag?.gameObject.SetActive(false);
+    }
 }

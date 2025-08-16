@@ -43,7 +43,7 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: terrain1
+  - name: terrain
     uniqueID: 234734947
     locked: 0
   - name: props

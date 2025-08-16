@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: aa83af26775ce8a47b9c914e06fa52cc
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 32
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Pixelon
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: b7d22f7691f48f748bbe2e0e2b518408, type: 3}
+  customCharacters: 
+  fontRenderingMode: 2
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

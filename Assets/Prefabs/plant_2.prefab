@@ -11,9 +11,12 @@ GameObject:
   - component: {fileID: 4263615796279181898}
   - component: {fileID: 4263615796279181899}
   - component: {fileID: 4263615796279181896}
+  - component: {fileID: 8903119709046496963}
+  - component: {fileID: 8468644745225516258}
+  - component: {fileID: 4374239467730471709}
   m_Layer: 0
   m_Name: plant_2
-  m_TagString: Untagged
+  m_TagString: food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4263615796279181897}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.26, y: -0.99, z: 0}
+  m_LocalPosition: {x: -3.26, y: -0.984, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -74,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: -1156944059
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c0aa4d672e657e7419216de729904e2e, type: 3}
+  m_Sprite: {fileID: -191672115, guid: 139136bacfcc8704490999a70bdf2b94, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,10 +101,10 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.011860013, y: -0.12255347}
+  m_Offset: {x: 0.011860013, y: 0.017480403}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0.35}
     oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -109,5 +112,57 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.47025275, y: 0.20142579}
+  m_Size: {x: 0.47025275, y: 0.220097}
   m_EdgeRadius: 0
+--- !u!114 &8903119709046496963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263615796279181897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e9968e52c589424b9d1bbb2a5d4fa37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxResourceAmount: 100
+  hungerSatisfactionMultiplier: 2
+  resourceAmount: 100
+  isRenewable: 1
+  regenerationRate: 0.1
+  regenerationDelay: 3
+--- !u!95 &8468644745225516258
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263615796279181897}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2e256ec69b8cc8948a3482d90a4f157c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4374239467730471709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263615796279181897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f313fa826092c514db607ca54111abcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityName: Plant

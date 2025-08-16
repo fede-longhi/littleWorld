@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 555334501440669690}
   - component: {fileID: 555334501440669695}
   - component: {fileID: 555334501440669688}
+  - component: {fileID: 5137576525089939882}
   m_Layer: 6
   m_Name: plant_1
   m_TagString: Untagged
@@ -123,3 +124,17 @@ CapsuleCollider2D:
   m_Offset: {x: 0.0057681804, y: -6.876206e-10}
   m_Size: {x: 1.0572023, y: 0.40000263}
   m_Direction: 1
+--- !u!114 &5137576525089939882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555334501440669691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f313fa826092c514db607ca54111abcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityName: Big Plant
+  selectionIndicatorPositionOffset: 0.5
