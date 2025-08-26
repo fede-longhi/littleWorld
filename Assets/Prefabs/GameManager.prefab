@@ -45,7 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f420a8ffcdcaeaa47b5d46ebec554e0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  creaturePrefab: {fileID: 0}
+  activeEntityPrefab: {fileID: 0}
   activeCamera: {fileID: 0}
+  stats: {fileID: 0}
 --- !u!114 &4613265351840406529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,6 +122,14 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 5d885891-825f-4d4f-a78c-b02b856dd5b8
     m_ActionName: Game/decreaseGameSpeed[/Keyboard/numpadMinus]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 217fb17a-e7ec-4404-bcee-72f242d08cc9
+    m_ActionName: Game/click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a16c03ad-769f-401e-8d6a-448a4950bd92
+    m_ActionName: Game/clearAction[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Game

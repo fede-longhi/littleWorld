@@ -11,10 +11,12 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private CinemachineVirtualCamera activeCamera;
     private List<GameObject> creatures = new List<GameObject>();
+    private GameObject cameraTarget;
     private GameObject activeCreature;
     private int creatureIndex;
     private GameAction activeGameAction;
     public GameStats stats;
+    private bool freeCamera = true;
 
     private void Awake()
     {
@@ -24,16 +26,17 @@ public class GameController : MonoBehaviour
 
         creatureIndex = 0;
         GameObject[] initialCreatureObjects = GameObject.FindGameObjectsWithTag(TagStrings.CREATURE_TAG);
-        if (initialCreatureObjects.Length > 0)
-        {
-            activeCreature = initialCreatureObjects[creatureIndex];
-            activeCamera.Follow = activeCreature.transform;
-        }
-
         foreach (GameObject creatureObject in initialCreatureObjects)
         {
             creatureObject.TryGetComponent<Creature>(out Creature creature);
             RegisterCreature(creatureObject);
+        }
+
+        GameObject[] cameraTargets = GameObject.FindGameObjectsWithTag(TagStrings.CAMERA_FOLLOW_TAG);
+        if (cameraTargets.Length > 0)
+        {
+            cameraTarget = cameraTargets[0];
+            activeCamera.Follow = cameraTarget.transform;
         }
 
         activeGameAction = new SelectEntityAction(SelectEntity);
@@ -45,6 +48,7 @@ public class GameController : MonoBehaviour
         {
             if (activeCreature != null && activeCreature != entityObject)
             {
+                freeCamera = false;
                 activeCreature.TryGetComponent<Entity>(out Entity activeEntity);
                 activeEntity?.Deselect();
                 GameEventBus.Raise(new GameEvent { type = GameEventType.DESELECTED_ENTITY, data = activeEntity });
@@ -54,6 +58,7 @@ public class GameController : MonoBehaviour
             entityObject.TryGetComponent<Entity>(out Entity entity);
             if (entity != null)
             {
+                activeCamera.Follow = activeCreature.transform;
                 Debug.Log($"Selected Entity: {entity.entityName}");
                 entity.Select();
                 GameEventBus.Raise(new GameEvent { type = GameEventType.SELECTED_ENTITY, data = entity });
@@ -66,14 +71,22 @@ public class GameController : MonoBehaviour
         else if (activeCreature != null)
         {
             activeCreature.TryGetComponent<Entity>(out Entity activeEntity);
+            cameraTarget.transform.position = activeCreature.transform.position;
+            activeCamera.Follow = cameraTarget.transform;
+            freeCamera = true;
             activeEntity?.Deselect();
             GameEventBus.Raise(new GameEvent { type = GameEventType.DESELECTED_ENTITY, data = activeEntity });
+        }
+        else
+        {
+            activeCamera.Follow = cameraTarget.transform;
+            freeCamera = true;
         }
     }
 
     public void OnChangeTarget(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.started && !freeCamera)
         {
             Debug.Log("Change Target");
             creatureIndex += 1;
@@ -120,9 +133,13 @@ public class GameController : MonoBehaviour
             {
                 activeGameAction = new SelectEntityAction(SelectEntity);
             }
+
             if (activeCreature != null)
             {
                 activeCreature.TryGetComponent<Entity>(out Entity activeEntity);
+                cameraTarget.transform.position = activeCreature.transform.position;
+                activeCamera.Follow = cameraTarget.transform;
+                freeCamera = true;
                 activeEntity?.Deselect();
                 GameEventBus.Raise(new GameEvent { type = GameEventType.DESELECTED_ENTITY, data = activeEntity });
             }
@@ -172,6 +189,29 @@ public class GameController : MonoBehaviour
         if (Time.timeScale > 0.1)
         {
             Time.timeScale /= 2f;
+        }
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        if (freeCamera)
+        {
+            Vector2 movementInput = context.ReadValue<Vector2>();
+            if (cameraTarget != null)
+            {
+                cameraTarget.TryGetComponent<Movable>(out var movable);
+                movable?.Move(new Vector3(movementInput.x, movementInput.y, 0).normalized);
+            }
+            
+            // if (movementInput.x > -0.5f && movementInput.x < 0.5f)
+            // {
+            //     movementInput.x = 0f;
+            // }
+
+            // if (movementInput.y > -0.5f && movementInput.y < 0.5f)
+            // {
+            //     movementInput.y = 0f;
+            // }
         }
     }
 }

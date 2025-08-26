@@ -71,6 +71,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""7e8930d3-f647-4658-ba9c-81fb60aef3af"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -150,6 +159,61 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""clearAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""8c04b6fc-0ff9-400b-bf32-871db5894dec"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""fab0ca86-8e70-49d5-b0ab-b2f0a926fcec"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""d2935152-d52a-42cd-839a-14fc4aa77444"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""df7c2c14-1cb9-4dba-86fd-b4262d145aa6"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""80f27d5b-2fa1-4683-9b9a-b52ca4718e86"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -180,6 +244,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Game_decreaseGameSpeed = m_Game.FindAction("decreaseGameSpeed", throwIfNotFound: true);
         m_Game_click = m_Game.FindAction("click", throwIfNotFound: true);
         m_Game_clearAction = m_Game.FindAction("clearAction", throwIfNotFound: true);
+        m_Game_Move = m_Game.FindAction("Move", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -246,6 +311,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_decreaseGameSpeed;
     private readonly InputAction m_Game_click;
     private readonly InputAction m_Game_clearAction;
+    private readonly InputAction m_Game_Move;
     public struct GameActions
     {
         private @PlayerInput m_Wrapper;
@@ -255,6 +321,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @decreaseGameSpeed => m_Wrapper.m_Game_decreaseGameSpeed;
         public InputAction @click => m_Wrapper.m_Game_click;
         public InputAction @clearAction => m_Wrapper.m_Game_clearAction;
+        public InputAction @Move => m_Wrapper.m_Game_Move;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -279,6 +346,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @clearAction.started += instance.OnClearAction;
             @clearAction.performed += instance.OnClearAction;
             @clearAction.canceled += instance.OnClearAction;
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
         }
 
         private void UnregisterCallbacks(IGameActions instance)
@@ -298,6 +368,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @clearAction.started -= instance.OnClearAction;
             @clearAction.performed -= instance.OnClearAction;
             @clearAction.canceled -= instance.OnClearAction;
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
         }
 
         public void RemoveCallbacks(IGameActions instance)
@@ -331,5 +404,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnDecreaseGameSpeed(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
         void OnClearAction(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
     }
 }
